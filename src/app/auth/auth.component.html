@@ -1,0 +1,25 @@
+<div class="w-full h-[100vh] mx-auto flex items-center justify-center">
+  <div class=" bg-white bg-opacity-25 rounded-lg p-2 flex flex-row justify-center items-center">
+    <div class="w-full h-full md:max-h-[65vh] text-white">
+      <div class="h-full md:h-[65vh] rounded shadow-2xl">
+        <div class="bg-login h-[15rem]"></div>
+        <h2 class="text-center text-4xl underline font-bold">Hotel</h2>
+        <h3 class="mt-5 text-center font-bold text-xl">Login</h3>
+        <form action="" [formGroup]="formLogin" class="p-5">
+          <div class="p-3 w-full">
+            <label for="" class="w-full text-center text-white">Email</label>
+            <input type="email" formControlName="email" class="w-full p-2 rounded-md bg-gray-200 text-black" placeholder="Type your email">
+          </div>
+          <div class="p-3 w-full">
+            <label for="" class="w-full text-center text-white">Password</label>
+            <input type="password" formControlName="password" class="w-full p-2 rounded-md bg-gray-200 text-black" placeholder="Type your password">
+          </div>
+          <div class="p-3 w-full text-center">
+            <input type="submit" value="Login" class="w-full md:w-1/5 p-3 rounded-md bg-sky-700 hover:bg-sky-900 font-bold">
+          </div>
+        </form>
+    </div>
+
+  </div>
+
+</div>
