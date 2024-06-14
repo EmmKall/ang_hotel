@@ -13,4 +13,8 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
 })
 export class HeaderComponent {
 
+  logout(): void {
+
+  }
+
 }
