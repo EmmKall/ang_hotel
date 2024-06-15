@@ -20,7 +20,7 @@ export class HelpersService {
 
   async showConfirmation( title: string, text: string, icon: any = 'warning', confirmButtonText: string ): Promise<any> {
     let res: any;
-    Swal.fire({
+    await Swal.fire({
       title, text, icon,
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
