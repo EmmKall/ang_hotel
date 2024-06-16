@@ -11,24 +11,25 @@ import { MatSort, MatSortModule, Sort } from '@angular/material/sort';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
 
 export interface User {
-  id:         number;
-  name:       string;
-  last_name:  string;
-  email:      string;
-  phone:      string;
+  id:        number;
+  name:      string;
+  last_name: string;
+  email:     string;
+  phone:     string;
+  rol:       number;
 }
 
 const ELEMENT_DATA: User[] = [
-  { id: 1, name: 'Hydrogen', last_name: 'as', email: '@mail', phone: 'H'},
-  { id: 2, name: 'Helium', last_name: 'as', email: '@mail', phone: 'He'},
-  { id: 3, name: 'Lithium', last_name: 'as', email: '@mail', phone: 'Li'},
-  { id: 4, name: 'Beryllium', last_name: 'as', email: '@mail', phone: 'Be'},
-  { id: 5, name: 'Boron', last_name: 'as', email: '@mail', phone: 'B'},
-  { id: 6, name: 'Carbon', last_name: 'as', email: '@mail', phone: 'C'},
-  { id: 7, name: 'Nitrogen', last_name: 'as', email: '@mail', phone: 'N'},
-  { id: 8, name: 'Oxygen', last_name: 'as', email: '@mail', phone: 'O'},
-  { id: 9, name: 'Fluorine', last_name: 'as', email: '@mail', phone: 'F'},
-  { id: 10, name: 'Neon', last_name: 'as', email: '@mail', phone: 'Ne'},
+  { id: 1, name: 'Hydrogen', last_name: 'as', email: '@mail', phone: 'H', rol: 0 },
+  { id: 2, name: 'Helium', last_name: 'as', email: '@mail', phone: 'He', rol: 1 },
+  { id: 3, name: 'Lithium', last_name: 'as', email: '@mail', phone: 'Li', rol: 1 },
+  { id: 4, name: 'Beryllium', last_name: 'as', email: '@mail', phone: 'Be', rol: 1 },
+  { id: 5, name: 'Boron', last_name: 'as', email: '@mail', phone: 'B' , rol: 1 },
+  { id: 6, name: 'Carbon', last_name: 'as', email: '@mail', phone: 'C' , rol: 1 },
+  { id: 7, name: 'Nitrogen', last_name: 'as', email: '@mail', phone: 'N', rol: 1},
+  { id: 8, name: 'Oxygen', last_name: 'as', email: '@mail', phone: 'O' , rol: 1 },
+  { id: 9, name: 'Fluorine', last_name: 'as', email: '@mail', phone: 'F', rol: 1 },
+  { id: 10, name: 'Neon', last_name: 'as', email: '@mail', phone: 'Ne', rol: 1 },
 ];
 
 @Component({
@@ -59,7 +60,7 @@ export class UserComponent {
 
   @ViewChild(MatSort) sort!: MatSort;
 
-  displayedColumns: string[] = ['name', 'email', 'phone', 'actions'];
+  displayedColumns: string[] = ['name', 'email', 'phone', 'rol', 'actions'];
   dataSource = new MatTableDataSource(ELEMENT_DATA);
 
 
@@ -107,6 +108,7 @@ export class UserComponent {
       'rol':       [ 0, [ Validators.required ] ]
     });
     this.expandedFormUser = false;
+    this.operation = 'Add';
   }
 
   handleSubmit(): void {
@@ -131,9 +133,18 @@ export class UserComponent {
   }
 
   fillEdit( id: number ): void {
-    console.log( 'edit ' + id );
-    this.expandedFormUser = true;
+    const row: User = ELEMENT_DATA.filter( item => item.id === id )[ 0 ];
 
+    this.formGroup = this._formBuilder.nonNullable.group({
+      'id':        [ row.id, [] ],
+      'name':      [ row.name, [ Validators.required ] ],
+      'last_name': [ row.last_name, [ Validators.required ] ],
+      'email' :    [ row.email, [ Validators.required, Validators.email ],  ],
+      'phone':     [ row.phone, [ Validators.required ] ],
+      'rol':       [ row.rol, [ Validators.required ] ]
+    });
+    this.operation = 'Edit';
+    this.expandedFormUser = true;
   }
 
   destroy( id: number ): void {
