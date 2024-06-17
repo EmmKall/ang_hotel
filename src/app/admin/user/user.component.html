@@ -2,6 +2,7 @@
   <mat-card-content>
 
     <mat-expansion-panel id="add" [expanded]="expandedFormUser" (opened)="panelOpenState.set(true)" (closed)="panelOpenState.set(false)" class="!bg-gray-700">
+
       <mat-expansion-panel-header class="w-full p-1">
         <mat-panel-title class="!text-white">
           <i class="fa-solid fa-plus"></i> &nbsp; {{ operation }} User
@@ -9,104 +10,17 @@
         <mat-panel-description class="!text-gray-400"> {{ operation }} user </mat-panel-description>
       </mat-expansion-panel-header>
 
-      <div class="w-full bg-gray-500 text-white">
-        <form class="w-full flex flex-col md:flex-row" [formGroup]="formGroup" (submit)="handleSubmit()">
-          <div class="w-full md:w-1/4 p-1 md:p-4">
-            <label for="" class="w-full">Name</label>
-            <input type="text" name="" id="" class="w-full p-2 text-black rounded bg-gray-200" formControlName="name" placeholder="Type your name">
-          </div>
-          <div class="w-full md:w-1/4 p-1 md:p-4">
-            <label for="" class="w-full">Last name</label>
-            <input type="text" name="" id="" class="w-full p-2 text-black rounded bg-gray-200" formControlName="last_name" placeholder="Type your last name">
-          </div>
-          <div class="w-full md:w-1/4 p-1 md:p-4">
-            <label for="" class="w-full">Email</label>
-            <input type="email" name="" id="" class="w-full p-2 text-black rounded bg-gray-200" formControlName="email" placeholder="Type your email">
-          </div>
-          <div class="w-full md:w-1/4 p-1 md:p-4">
-            <label for="" class="w-full">Phone</label>
-            <input type="text" name="" id="" class="w-full p-2 text-black rounded bg-gray-200" formControlName="phone" placeholder="Type your phone">
-          </div>
-          <div class="w-full md:w-1/4 p-1 md:p-4">
-            <label for="" class="w-full">Rol</label>
-            <select name="" id="" class="w-full p-2 text-black rounded bg-gray-200" formControlName="rol">
-              <option value="" selected disabled>--Choose option--</option>
-              <option value="0">User</option>
-              <option value="1">Admin</option>
-            </select>
-          </div>
-          <div class="w-full md:w-1/4 p-1 md:px-2 flex flex-col">
-            <button type="submit" class="m-auto w-full p-2 my-2 rounded bg-sky-500 hover:bg-sky-700 text-white font-bold">
-              <i class="fa-solid fa-plus"></i> &nbsp; Add
-            </button>
-            <button (click)="cleanFormGroup()" type="button" class="m-auto w-full p-2 my-2 rounded bg-red-500 hover:bg-red-700 text-white font-bold">
-              <i class="fa-solid fa-eraser"></i> &nbsp; Clean
-            </button>
-          </div>
-        </form>
-      </div>
+      <app-form-user
+        (handleForm)="handleSubmit( $event )"
+        (closeForm)="closeForm( $event )"
+        [user]="user"
+      />
 
     </mat-expansion-panel>
   </mat-card-content>
   <mat-card-content>
-    <div class="w-full bg-gray-400 p-2 overflow-x-auto">
 
-      <mat-form-field class="w-full">
-        <mat-label class="w-full">Filter</mat-label>
-        <input matInput (keyup)="applyFilter($event)" placeholder="Search user" #input class="w-full">
-      </mat-form-field>
+    <app-list-user (editUserId)="fillEdit( $event )" />
 
-      <table mat-table [dataSource]="dataSource" class="mat-elevation-z8" matSort (matSortChange)="announceSortChange($event)" >
-
-        <!--- Note that these columns can be defined in any order.
-              The actual rendered columns are set as a property on the row definition" -->
-
-        <!-- Position Column -->
-        <ng-container matColumnDef="name">
-          <th mat-header-cell *matHeaderCellDef class="!font-bold !text-white !bg-gray-700" mat-sort-header sortActionDescription="Sort by name"> Name </th>
-          <td mat-cell *matCellDef="let element"> {{element.name}} {{element.last_name}} </td>
-        </ng-container>
-
-        <!-- Name Column -->
-        <ng-container matColumnDef="email">
-          <th mat-header-cell *matHeaderCellDef class="!font-bold !text-white !bg-gray-700" mat-sort-header sortActionDescription="Sort by email"> Email </th>
-          <td mat-cell *matCellDef="let element"> {{element.email}} </td>
-        </ng-container>
-
-        <!-- Weight Column -->
-        <ng-container matColumnDef="phone">
-          <th mat-header-cell *matHeaderCellDef class="!font-bold !text-white !bg-gray-700" mat-sort-header sortActionDescription="Sort by phone"> Phone </th>
-          <td mat-cell *matCellDef="let element"> {{element.phone}} </td>
-        </ng-container>
-
-        <!-- Weight Column -->
-        <ng-container matColumnDef="rol">
-          <th mat-header-cell *matHeaderCellDef class="!font-bold !text-white !bg-gray-700"> Rol </th>
-          <td mat-cell *matCellDef="let element"> {{ ( element.rol === 0 ) ? 'Admin' : 'Stack' }} </td>
-        </ng-container>
-
-        <!-- Symbol Column -->
-        <ng-container matColumnDef="actions">
-          <th mat-header-cell *matHeaderCellDef class="!font-bold !text-center !text-white !bg-gray-700"> Actions </th>
-          <td mat-cell *matCellDef="let element">
-            <div class="flex justify-around">
-              <button (click)="fillEdit( element.id )" class="p-2 text-white rounded bg-green-500 hover:hover:green-700">
-                <i class="fa-regular fa-pen-to-square"></i>
-              </button>
-              <button (click)="destroy( element.id )" class="p-2 text-white rounded bg-red-500 hover:hover:red-700">
-                <i class="fa-solid fa-trash-can"></i>
-              </button>
-              <button (click)="destroy( element.id )" class="p-2 text-white rounded bg-sky-500 hover:hover:sky-700">
-                <i class="fa-solid fa-key"></i>
-              </button>
-            </div>
-          </td>
-        </ng-container>
-
-        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-      </table>
-
-    </div>
   </mat-card-content>
 </mat-card>
