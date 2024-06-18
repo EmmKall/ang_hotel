@@ -1,3 +1,28 @@
-<p>
-  floor works!
-</p>
+<mat-card appearance="outlined">
+  <mat-card-content>
+
+    <mat-expansion-panel id="add" [expanded]="expandedFormUser" (opened)="panelOpenState.set(true)" (closed)="panelOpenState.set(false)" class="!bg-gray-700">
+
+      <mat-expansion-panel-header class="w-full p-1">
+        <mat-panel-title class="!text-white">
+          <i class="fa-solid fa-plus"></i> &nbsp; {{ operation }} Floor
+        </mat-panel-title>
+        <mat-panel-description class="!text-gray-400"> {{ operation }} floor </mat-panel-description>
+      </mat-expansion-panel-header>
+
+      <app-form-floor
+      (handleForm)="handleSubmit( $event )"
+        (closeForm)="closeForm( $event )"
+        [floor]="floor"
+      />
+
+    </mat-expansion-panel>
+  </mat-card-content>
+  <mat-card-content>
+
+    <app-list-floor
+    (editFloorId)="fillEdit( $event )"
+    />
+
+  </mat-card-content>
+</mat-card>

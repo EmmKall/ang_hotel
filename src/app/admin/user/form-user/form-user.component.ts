@@ -40,15 +40,12 @@ export class FormUserComponent {
   });
 
   constructor() {
-
   }
 
   ngOnInit(): void {
-
   }
 
   ngAfterViewInit(): void {
-
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -65,7 +62,6 @@ export class FormUserComponent {
       'rol':       [ 0, [ Validators.required ] ]
     });
     this.closeForm.emit( false );
-    //this.operation = 'Add';
   }
 
   fillFormGroup(): void {

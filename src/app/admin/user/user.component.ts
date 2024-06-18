@@ -1,17 +1,11 @@
-import { MatInputModule } from '@angular/material/input';
 import { CommonModule } from '@angular/common';
-import { Component, inject, signal, ViewChild } from '@angular/core';
-import { FormGroup, FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Component, inject, signal } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatExpansionModule } from '@angular/material/expansion';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatIconModule } from '@angular/material/icon';
-import { MatTableDataSource, MatTableModule } from '@angular/material/table';
-import { MatSort, MatSortModule, Sort } from '@angular/material/sort';
-import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { User } from '../../interfaces/User';
 import { FormUserComponent } from './form-user/form-user.component';
 import { ListUserComponent } from './list-user/list-user.component';
+import { HelpersService } from '../../services/helpers.service';
 
 @Component({
   selector: 'app-user',
@@ -19,17 +13,9 @@ import { ListUserComponent } from './list-user/list-user.component';
   imports: [
     CommonModule,
     FormUserComponent,
-    ReactiveFormsModule,
-    FormsModule,
-    MatTableModule,
+    ListUserComponent,
     MatCardModule,
     MatExpansionModule,
-    MatIconModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatSort,
-    MatSortModule,
-    ListUserComponent,
   ],
   templateUrl: './user.component.html',
   styleUrl: './user.component.css'
@@ -37,9 +23,8 @@ import { ListUserComponent } from './list-user/list-user.component';
 
 export class UserComponent {
 
-  private readonly _formBuilder = inject( FormBuilder );
-
-  readonly panelOpenState = signal(false);
+  readonly panelOpenState   = signal(false);
+  private readonly _helper  = inject( HelpersService );
 
   operation: string = 'add';
 
@@ -54,12 +39,14 @@ export class UserComponent {
     rol: 0
   };
 
-  ngOnInit(): void {
+  constructor() {
 
   }
 
-  ngAfterViewInit() {
+  ngOnInit(): void {
+  }
 
+  ngAfterViewInit() {
   }
 
   closeForm( event: boolean ):void {
@@ -67,7 +54,7 @@ export class UserComponent {
     this.operation = 'add';
   }
 
-  handleSubmit( user: any ): void {
+  handleSubmit( user: User ): void {
     console.log( user );
     if( user.id === 0 ){
       //Add
@@ -88,10 +75,6 @@ export class UserComponent {
     this.user = user;
     this.expandedFormUser = true;
     this.operation = 'edit';
-  }
-
-  destroy( id: number ): void {
-    console.log( 'destroy ' + id );
   }
 
 }

@@ -1,0 +1,21 @@
+<div class="w-full bg-gray-500 text-white">
+  <form class="w-full flex flex-col md:flex-row" [formGroup]="formGroup" (submit)="handleSubmit()">
+    <div class="w-full md:w-1/4 p-1 md:p-4">
+      <label for="" class="w-full">Floor</label>
+      <input type="text" name="" id="" class="w-full p-2 text-black rounded bg-gray-200" formControlName="floor" placeholder="Type floor name">
+      <div class="text-center text-red-300 font-bold text-sm">
+        @if( formGroup.controls.floor.touched && formGroup.controls.floor.hasError( 'required' ) ) {
+          <p class="">Floor is required</p>
+        }
+      </div>
+    </div>
+    <div class="w-full md:w-1/4 p-1 md:px-2 flex flex-col">
+      <button type="submit" class="m-auto w-full p-2 my-2 rounded bg-sky-500 hover:bg-sky-700 text-white font-bold">
+        <i class="fa-solid fa-floppy-disk"></i> &nbsp; Save
+      </button>
+      <button (click)="cleanFormGroup()" type="button" class="m-auto w-full p-2 my-2 rounded bg-red-500 hover:bg-red-700 text-white font-bold">
+        <i class="fa-solid fa-eraser"></i> &nbsp; Clean
+      </button>
+    </div>
+  </form>
+</div>
