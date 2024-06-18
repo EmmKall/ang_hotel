@@ -40,7 +40,6 @@ export class UserComponent {
   };
 
   constructor() {
-
   }
 
   ngOnInit(): void {
