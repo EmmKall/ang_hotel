@@ -23,7 +23,7 @@ export class FormFloorComponent {
 
   @Input()  floor: Floor = {
     id: 0,
-    floor: '',
+    piso: '',
   };
 
   formGroup = this._formBuilder.nonNullable.group({
@@ -55,7 +55,7 @@ export class FormFloorComponent {
   fillFormGroup(): void {
     this.formGroup = this._formBuilder.nonNullable.group({
       'id':        [ this.floor.id, [] ],
-      'floor':      [ this.floor.floor, [ Validators.required ] ],
+      'floor':      [ this.floor.piso, [ Validators.required ] ],
     });
   }
 
@@ -66,7 +66,7 @@ export class FormFloorComponent {
     }
     this.floor = {
       id:    this.formGroup.value.id ?? 0,
-      floor: this.formGroup.value.floor ?? '',
+      piso: this.formGroup.value.floor ?? '',
     };
   this.handleForm.emit( this.floor );
   }

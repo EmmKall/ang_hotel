@@ -6,24 +6,139 @@ import { MatCardModule } from '@angular/material/card';
 import { MatSort, MatSortModule, Sort } from '@angular/material/sort';
 import { MatInputModule } from '@angular/material/input';
 import { HelpersService } from '../../../services/helpers.service';
+import { Floor } from '../../../interfaces/floor';
+import { CommonModule } from '@angular/common';
 
-const ELEMENT_DATA: Room[] = [
-  { id: 1, floor: { id: 0, floor: 'Hydrogen'}, room: 'room 01' },
-  { id: 2, floor: { id: 0, floor: 'Helium'}, room: 'room 02' },
-  { id: 3, floor: { id: 0, floor: 'Lithium'}, room: 'room 03' },
-  { id: 4, floor: { id: 0, floor: 'Beryllium'}, room: 'room 04' },
-  { id: 5, floor: { id: 0, floor: 'Boron'}, room: 'room 05' },
-  { id: 6, floor: { id: 0, floor: 'Carbon'}, room: 'room 06' },
-  { id: 7, floor: { id: 0, floor: 'Nitrogen'}, room: 'room 07' },
-  { id: 8, floor: { id: 0, floor: 'Oxygen'}, room: 'room 08' },
-  { id: 9, floor: { id: 0, floor: 'Fluorine'}, room: 'room 09' },
-  { id: 10, floor: { id: 0, floor: 'Neon'}, room: 'room 10' },
+const ELEMENT_DATA: Floor[] = [
+  {
+    "id": 1,
+    "piso": "Piso 01",
+    "created_at": "2024-06-27T01:29:37.000000Z",
+    "updated_at": "2024-06-27T01:29:37.000000Z",
+    "cuarto": [
+        {
+            "id": 1,
+            "cuarto": "101",
+            "piso_id": 1,
+            "created_at": "2024-06-27T01:37:47.000000Z",
+            "updated_at": "2024-06-27T01:37:47.000000Z"
+        },
+        {
+            "id": 2,
+            "cuarto": "102",
+            "piso_id": 1,
+            "created_at": "2024-06-27T01:37:53.000000Z",
+            "updated_at": "2024-06-27T01:37:53.000000Z"
+        },
+        {
+            "id": 3,
+            "cuarto": "103",
+            "piso_id": 1,
+            "created_at": "2024-06-27T01:37:58.000000Z",
+            "updated_at": "2024-06-27T01:37:58.000000Z"
+        },
+        {
+            "id": 4,
+            "cuarto": "104",
+            "piso_id": 1,
+            "created_at": "2024-06-27T01:38:03.000000Z",
+            "updated_at": "2024-06-27T01:38:03.000000Z"
+        },
+        {
+            "id": 5,
+            "cuarto": "105",
+            "piso_id": 1,
+            "created_at": "2024-06-27T01:38:08.000000Z",
+            "updated_at": "2024-06-27T01:38:08.000000Z"
+        }
+    ]
+},
+{
+    "id": 2,
+    "piso": "Piso 02",
+    "created_at": "2024-06-27T01:29:46.000000Z",
+    "updated_at": "2024-06-27T01:29:46.000000Z",
+    "cuarto": [
+        {
+            "id": 6,
+            "cuarto": "201",
+            "piso_id": 2,
+            "created_at": "2024-06-27T01:38:27.000000Z",
+            "updated_at": "2024-06-27T01:38:27.000000Z"
+        },
+        {
+            "id": 7,
+            "cuarto": "202",
+            "piso_id": 2,
+            "created_at": "2024-06-27T01:38:30.000000Z",
+            "updated_at": "2024-06-27T01:38:30.000000Z"
+        },
+        {
+            "id": 8,
+            "cuarto": "203",
+            "piso_id": 2,
+            "created_at": "2024-06-27T01:38:35.000000Z",
+            "updated_at": "2024-06-27T01:38:35.000000Z"
+        },
+        {
+            "id": 9,
+            "cuarto": "204",
+            "piso_id": 2,
+            "created_at": "2024-06-27T01:38:39.000000Z",
+            "updated_at": "2024-06-27T01:38:39.000000Z"
+        }
+    ]
+},
+{
+    "id": 3,
+    "piso": "Piso 03",
+    "created_at": "2024-06-27T01:29:51.000000Z",
+    "updated_at": "2024-06-27T01:29:51.000000Z",
+    "cuarto": [
+        {
+            "id": 10,
+            "cuarto": "301",
+            "piso_id": 3,
+            "created_at": "2024-06-27T01:38:45.000000Z",
+            "updated_at": "2024-06-27T01:38:45.000000Z"
+        },
+        {
+            "id": 11,
+            "cuarto": "302",
+            "piso_id": 3,
+            "created_at": "2024-06-27T01:38:48.000000Z",
+            "updated_at": "2024-06-27T01:38:48.000000Z"
+        },
+        {
+            "id": 12,
+            "cuarto": "303",
+            "piso_id": 3,
+            "created_at": "2024-06-27T01:38:53.000000Z",
+            "updated_at": "2024-06-27T01:38:53.000000Z"
+        },
+        {
+            "id": 13,
+            "cuarto": "304",
+            "piso_id": 3,
+            "created_at": "2024-06-27T01:38:56.000000Z",
+            "updated_at": "2024-06-27T01:38:56.000000Z"
+        },
+        {
+            "id": 14,
+            "cuarto": "305",
+            "piso_id": 3,
+            "created_at": "2024-06-27T01:39:03.000000Z",
+            "updated_at": "2024-06-27T01:39:03.000000Z"
+        }
+    ]
+},
 ];
 
 @Component({
   selector: 'app-list-room',
   standalone: true,
   imports: [
+    CommonModule,
     MatTableModule,
     MatCardModule,
     MatSort,
@@ -45,7 +160,16 @@ export class ListRoomComponent {
   displayedColumns: string[] = ['floor', 'room', 'actions'];
   dataSource = new MatTableDataSource(ELEMENT_DATA);
 
+  rooms: Room[] = [];
+  floors: Floor[]  = [];
+
+  constructor() {
+
+  }
+
   ngOnInit(): void {
+    this.floors = ELEMENT_DATA;
+    this.FilterRooms();
   }
 
   ngAfterViewInit() {
@@ -65,9 +189,17 @@ export class ListRoomComponent {
     }
   }
 
+  FilterRooms() {
+
+    this.rooms.forEach( element => {
+      const idFloor = element.id;
+
+    });
+  }
+
   editFloor( id: number ):void {
     const room = ELEMENT_DATA.filter( item => item.id === id )[ 0 ];
-    this.editFloorId.emit( room );
+    //this.editFloorId.emit( room );
   }
 
   async destroy( id: number ): Promise<void> {

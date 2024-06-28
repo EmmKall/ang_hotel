@@ -31,7 +31,7 @@ export class FloorComponent implements OnInit {
 
   floor: Floor = {
     id: 0,
-    floor: ''
+    piso: ''
   };
 
 

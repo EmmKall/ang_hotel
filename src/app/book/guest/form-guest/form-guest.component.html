@@ -1,0 +1,72 @@
+<div class="w-full bg-gray-500 text-white">
+  <form class="w-full flex flex-col md:flex-row" [formGroup]="formGroup" (submit)="handleSubmit()">
+    <div class="w-full md:w-1/4 p-1 md:p-4">
+      <label for="" class="w-full">Name</label>
+      <input type="text" name="" id="" class="w-full p-2 text-black rounded bg-gray-200" formControlName="name" placeholder="Type your name">
+      <div class="text-center text-red-300 font-bold text-sm">
+        @if( formGroup.controls.name.touched && formGroup.controls.name.hasError( 'required' ) ) {
+          <p class="">Name is required</p>
+        }
+      </div>
+    </div>
+    <div class="w-full md:w-1/4 p-1 md:p-4">
+      <label for="" class="w-full">Last name</label>
+      <input type="text" name="" id="" class="w-full p-2 text-black rounded bg-gray-200" formControlName="last_name" placeholder="Type your last name">
+      <div class="text-center text-red-300 font-bold text-sm">
+        @if( formGroup.controls.last_name.touched && formGroup.controls.last_name.hasError( 'required' ) ) {
+          <p class="">Last name is required</p>
+        }
+      </div>
+    </div>
+    <div class="w-full md:w-1/4 p-1 md:p-4">
+      <label for="" class="w-full">Email</label>
+      <input type="email" name="" id="" class="w-full p-2 text-black rounded bg-gray-200" formControlName="email" placeholder="Type your email">
+      <div class="text-center text-red-300 font-bold text-sm">
+        @if( formGroup.controls.email.touched && formGroup.controls.email.hasError( 'required' ) ) {
+          <p class="">Email is required</p>
+        } @else if( formGroup.controls.email.touched && formGroup.controls.email.hasError( 'email' ) ) {
+          <p class="">Email is not valid</p>
+        }
+      </div>
+    </div>
+    <div class="w-full md:w-1/4 p-1 md:p-4">
+      <label for="" class="w-full">Phone</label>
+      <input type="text" name="" id="" class="w-full p-2 text-black rounded bg-gray-200" formControlName="phone" placeholder="Type your phone">
+      <div class="text-center text-red-300 font-bold text-sm">
+        @if( formGroup.controls.phone.touched && formGroup.controls.phone.hasError( 'required' ) ) {
+          <p class="">Phone is required</p>
+        }
+      </div>
+    </div>
+    <div class="w-full md:w-1/4 p-1 md:p-4">
+      <label for="" class="w-full">Born Day</label>
+      <input type="date" name="" id="" class="w-full p-2 text-black rounded bg-gray-200" formControlName="phone">
+      <div class="text-center text-red-300 font-bold text-sm">
+        @if( formGroup.controls.born_day.touched && formGroup.controls.born_day.hasError( 'required' ) ) {
+          <p class="">Phone is required</p>
+        }
+      </div>
+    </div>
+    <div class="w-full md:w-1/4 p-1 md:p-4">
+      <label for="" class="w-full">Sex</label>
+      <select name="" id="" class="w-full p-2 text-black rounded bg-gray-200" formControlName="sex">
+        <option value="-1" selected disabled>--Choose option--</option>
+        <option value='male'>Male</option>
+        <option value='famele'>Famele</option>
+      </select>
+      <div class="text-center text-red-300 font-bold text-sm">
+        @if( formGroup.controls.sex.touched && formGroup.controls.sex.hasError( 'required' ) ) {
+          <p class="">Rol is required</p>
+        }
+      </div>
+    </div>
+    <div class="w-full md:w-1/4 p-1 md:px-2 flex flex-col">
+      <button type="submit" class="m-auto w-full p-2 my-2 rounded bg-sky-500 hover:bg-sky-700 text-white font-bold">
+        <i class="fa-solid fa-floppy-disk"></i> &nbsp; Save
+      </button>
+      <button (click)="cleanFormGroup()" type="button" class="m-auto w-full p-2 my-2 rounded bg-red-500 hover:bg-red-700 text-white font-bold">
+        <i class="fa-solid fa-eraser"></i> &nbsp; Clean
+      </button>
+    </div>
+  </form>
+</div>

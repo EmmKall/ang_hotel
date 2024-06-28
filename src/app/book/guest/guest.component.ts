@@ -1,44 +1,42 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, signal } from '@angular/core';
-import { FormRoomComponent } from './form-room/form-room.component';
-
+import { ListGuestComponent } from './list-guest/list-guest.component';
+import { FormGuestComponent } from './form-guest/form-guest.component';
 import { MatCardModule } from '@angular/material/card';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { HelpersService } from '../../services/helpers.service';
-import { Room } from '../../interfaces/room';
-import { ListUserComponent } from '../user/list-user/list-user.component';
-import { ListRoomComponent } from './list-room/list-room.component';
+import { Guest } from '../../interfaces/guest';
 
 @Component({
-  selector: 'app-room',
+  selector: 'app-guest',
   standalone: true,
   imports: [
     CommonModule,
-    FormRoomComponent,
-    ListRoomComponent,
+    ListGuestComponent,
+    FormGuestComponent,
     MatCardModule,
     MatExpansionModule,
   ],
-  templateUrl: './room.component.html',
-  styleUrl: './room.component.css'
+  templateUrl: './guest.component.html',
+  styleUrl: './guest.component.css'
 })
-export class RoomComponent {
+export class GuestComponent {
 
   readonly panelOpenState   = signal(false);
   private readonly _helper  = inject( HelpersService );
 
   operation: string = 'add';
 
-  expandedFormUser:boolean = false;
+  expandedFormGuest:boolean = false;
 
-  room: Room = {
+  guest: Guest = {
     id: 0,
-    piso_id: 0,
-    piso: {
-      id: 0,
-      piso: ''
-    },
-    cuarto: '',
+    name: '',
+    last_name: '',
+    email: '',
+    phone: '',
+    born_day: '',
+    sex: ''
   };
 
   constructor() {
@@ -51,13 +49,13 @@ export class RoomComponent {
   }
 
   closeForm( event: boolean ):void {
-    this.expandedFormUser = event;
+    this.expandedFormGuest = event;
     this.operation = 'add';
   }
 
-  handleSubmit( room: Room ): void {
-    console.log( room );
-    if( room.id === 0 ){
+  handleSubmit( guest: Guest ): void {
+    console.log( guest );
+    if( guest.id === 0 ){
       //Add
     } else {
       //Edit
@@ -72,12 +70,11 @@ export class RoomComponent {
 
   }
 
-  fillEdit( room: Room ): void {
-    this.room = room;
-    this.expandedFormUser = true;
+  fillEdit( guest: Guest ): void {
+    this.guest = guest;
+    this.expandedFormGuest = true;
     this.operation = 'edit';
   }
-
 
 
 }

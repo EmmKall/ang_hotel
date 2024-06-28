@@ -23,11 +23,8 @@ export class FormRoomComponent {
 
   @Input()  room: Room = {
     id: 0,
-    floor: {
-      id: 0,
-      floor: '',
-    },
-    room: '',
+    piso_id: 0,
+    cuarto: '',
   };
 
   formGroup = this._formBuilder.nonNullable.group({
@@ -61,8 +58,8 @@ export class FormRoomComponent {
   fillFormGroup(): void {
     this.formGroup = this._formBuilder.nonNullable.group({
       'id':        [ this.room.id, [] ],
-      'floor':     [ this.room.floor.id, [ Validators.required ] ],
-      'room':      [ this.room.room, [ Validators.required ] ],
+      'floor':     [ this.room.piso_id, [ Validators.required ] ],
+      'room':      [ this.room.cuarto, [ Validators.required ] ],
     });
   }
 
@@ -73,11 +70,12 @@ export class FormRoomComponent {
     }
     this.room = {
       id:    this.formGroup.value.id ?? 0,
-      floor: {
+      piso_id: 0, //Check
+      piso: {
         id: this.formGroup.value.floor ?? 0,
-        floor: ''
+        piso: ''
       },
-      room:  this.formGroup.value.room ?? '',
+      cuarto:  this.formGroup.value.room ?? '',
     };
   this.handleForm.emit( this.room );
   }

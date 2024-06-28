@@ -8,16 +8,16 @@ import { MatInputModule } from '@angular/material/input';
 import { HelpersService } from '../../../services/helpers.service';
 
 const ELEMENT_DATA: Floor[] = [
-  { id: 1, floor: 'Hydrogen' },
-  { id: 2, floor: 'Helium' },
-  { id: 3, floor: 'Lithium' },
-  { id: 4, floor: 'Beryllium' },
-  { id: 5, floor: 'Boron' },
-  { id: 6, floor: 'Carbon' },
-  { id: 7, floor: 'Nitrogen' },
-  { id: 8, floor: 'Oxygen' },
-  { id: 9, floor: 'Fluorine' },
-  { id: 10, floor: 'Neon' },
+  { id: 1, piso: 'Hydrogen' },
+  { id: 2, piso: 'Helium' },
+  { id: 3, piso: 'Lithium' },
+  { id: 4, piso: 'Beryllium' },
+  { id: 5, piso: 'Boron' },
+  { id: 6, piso: 'Carbon' },
+  { id: 7, piso: 'Nitrogen' },
+  { id: 8, piso: 'Oxygen' },
+  { id: 9, piso: 'Fluorine' },
+  { id: 10, piso: 'Neon' },
 ];
 
 @Component({

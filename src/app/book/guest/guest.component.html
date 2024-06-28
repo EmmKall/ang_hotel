@@ -1,0 +1,26 @@
+<mat-card appearance="outlined">
+  <mat-card-content>
+
+    <mat-expansion-panel id="add" [expanded]="expandedFormGuest" (opened)="panelOpenState.set(true)" (closed)="panelOpenState.set(false)" class="!bg-gray-700">
+
+      <mat-expansion-panel-header class="w-full p-1">
+        <mat-panel-title class="!text-white">
+          <i class="fa-solid fa-plus"></i> &nbsp; {{ operation }} User
+        </mat-panel-title>
+        <mat-panel-description class="!text-gray-400"> {{ operation }} user </mat-panel-description>
+      </mat-expansion-panel-header>
+
+      <app-form-guest
+        (handleForm)="handleSubmit( $event )"
+        (closeForm)="closeForm( $event )"
+        [guest]="guest"
+      />
+
+    </mat-expansion-panel>
+  </mat-card-content>
+  <mat-card-content>
+
+    <app-list-guest (editUserId)="fillEdit( $event )" />
+
+  </mat-card-content>
+</mat-card>
