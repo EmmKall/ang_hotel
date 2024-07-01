@@ -45,17 +45,24 @@ export class AuthComponent implements OnInit {
     }
     const data = this.formGroup.value;
     this._authS.login( data ).subscribe( res =>{
-      const { access_token, expires_in } = res;
-      if( access_token !== null && access_token.length > 0 && expires_in > 0 ){
+      const { status, msg } = res;
+      if( status === 200 ){
         //
-        const  { id, rol, name, last_name } = res;
-        const user = `${name} ${last_name}` ?? '';
-        //localStorage.setItem( 'id', `${id}` );
-        //localStorage.setItem( 'rol', `${rol}` );
-        //localStorage.setItem( 'user', user );
+        const { data } = res;
+        const  { id, user, access_token, rol } = data;
+
+        localStorage.setItem( 'id', `${id}` );
+        localStorage.setItem( 'rol', `${rol}` );
         localStorage.setItem( 'token', access_token );
-        //localStorage.setItem( 'notifications', `${notifications}` );
-        this._router.navigate( [ 'admin' ] );
+        this._helper.showMessage( 'Success', 'Login successfully', 'success', 2500 );
+        setTimeout(() => {
+          if( rol === 1 ){
+            this._router.navigate( [ 'admin' ] );
+          } else {
+            this._router.navigate( [ 'book' ] );
+          }
+        }, 2500 );
+
         this.loading = false;
       } else {
         this.loading = false;

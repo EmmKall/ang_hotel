@@ -6,6 +6,7 @@ import { User } from '../../interfaces/User';
 import { FormUserComponent } from './form-user/form-user.component';
 import { ListUserComponent } from './list-user/list-user.component';
 import { HelpersService } from '../../services/helpers.service';
+import { UserService } from '../../services/user.service';
 
 @Component({
   selector: 'app-user',
@@ -25,6 +26,7 @@ export class UserComponent {
 
   readonly panelOpenState   = signal(false);
   private readonly _helper  = inject( HelpersService );
+  private readonly _user    = inject( UserService );
 
   operation: string = 'add';
 
@@ -43,9 +45,16 @@ export class UserComponent {
   }
 
   ngOnInit(): void {
+    this.getDate();
   }
 
   ngAfterViewInit() {
+  }
+
+  getDate(): void {
+    this._user.getAll().subscribe( res => { console.log( res );
+
+    });
   }
 
   closeForm( event: boolean ):void {
