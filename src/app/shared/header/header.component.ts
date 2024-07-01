@@ -1,6 +1,7 @@
 import { Component, inject } from '@angular/core';
-import { RouterLink, RouterLinkActive } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { HelpersService } from '../../services/helpers.service';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-header',
@@ -15,10 +16,16 @@ import { HelpersService } from '../../services/helpers.service';
 export class HeaderComponent {
 
   private readonly _helper = inject( HelpersService );
+  private readonly _authS  = inject( AuthService );
+  private readonly _router = inject( Router );
 
   async logout(): Promise<any> {
     const res = await this._helper.showConfirmation( 'Are you sure?', 'The session will be ended', 'warning', 'Yes, logout' );
-    console.log( res );
+    localStorage.clear();
+    this._helper.showToaster( 'success', 'Logout success', false, 'top-end', 2500 );
+    setTimeout(() => {
+      this._router.navigate( [ '/' ] );
+    }, 2500 );
   }
 
 }
