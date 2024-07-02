@@ -1,3 +1,6 @@
+@if( loading ){
+  <app-loading />
+}
 <mat-card appearance="outlined">
   <mat-card-content>
 
@@ -22,6 +25,7 @@
 
     <app-list-floor
       (editFloorId)="fillEdit( $event )"
+      [loadingData]="updatedList"
     />
 
   </mat-card-content>

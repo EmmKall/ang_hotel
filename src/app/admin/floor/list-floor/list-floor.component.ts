@@ -1,24 +1,12 @@
 import { LiveAnnouncer } from '@angular/cdk/a11y';
-import { Component, inject, output, ViewChild } from '@angular/core';
+import { Component, inject, Input, output, SimpleChanges, ViewChild } from '@angular/core';
 import { Floor } from '../../../interfaces/floor';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatCardModule } from '@angular/material/card';
 import { MatSort, MatSortModule, Sort } from '@angular/material/sort';
 import { MatInputModule } from '@angular/material/input';
 import { HelpersService } from '../../../services/helpers.service';
-
-const ELEMENT_DATA: Floor[] = [
-  { id: 1, piso: 'Hydrogen' },
-  { id: 2, piso: 'Helium' },
-  { id: 3, piso: 'Lithium' },
-  { id: 4, piso: 'Beryllium' },
-  { id: 5, piso: 'Boron' },
-  { id: 6, piso: 'Carbon' },
-  { id: 7, piso: 'Nitrogen' },
-  { id: 8, piso: 'Oxygen' },
-  { id: 9, piso: 'Fluorine' },
-  { id: 10, piso: 'Neon' },
-];
+import { FloorService } from '../../../services/Floor.service';
 
 @Component({
   selector: 'app-list-floor',
@@ -37,19 +25,48 @@ export class ListFloorComponent {
 
   private _liveAnnouncer = inject( LiveAnnouncer );
   private _helper        = inject( HelpersService );
+  private _floor         = inject( FloorService );
 
   editFloorId = output<Floor>();
 
   @ViewChild(MatSort) sort!: MatSort;
 
+  @Input() loadingData:boolean = false;
+
+  data: Array<Floor> = [];
+
   displayedColumns: string[] = ['floor', 'actions'];
-  dataSource = new MatTableDataSource(ELEMENT_DATA);
+  dataSource = new MatTableDataSource( this.data );
 
   ngOnInit(): void {
+    this.getData();
   }
 
   ngAfterViewInit() {
     this.dataSource.sort = this.sort;
+  }
+
+  ngOnChanges( changes: SimpleChanges ): void {
+    if( this.loadingData ){
+      this.getData();
+      this.loadingData = false;
+    }
+  }
+
+  getData(): void {
+    this._floor.getAll().subscribe( res => {
+      const { status, msg } = res;
+      if( status === 200 ){
+        const { data } = res;
+        this.data = data;
+        this.dataSource = new MatTableDataSource( this.data );
+      } else if( status === 400 || status === 404 ){
+        this._helper.showMessage( 'Error', msg, 'error', 2000 );
+      } else {
+        this._helper.showMessage( 'Error', 'Something wrong happened', 'error', 2000 );
+      }
+
+    });
   }
 
   applyFilter(event: Event) {
@@ -66,7 +83,8 @@ export class ListFloorComponent {
   }
 
   editFloor( id: number ):void {
-    const floor = ELEMENT_DATA.filter( item => item.id === id )[ 0 ];
+    const floor = this.data.filter( item => item.id === id )[ 0 ];
+    console.log( floor );
     this.editFloorId.emit( floor );
   }
 
@@ -74,8 +92,18 @@ export class ListFloorComponent {
     const res = await this._helper.showConfirmation( 'Are you sure?', 'User will be delete', 'warning', 'Yes, delete' );
     const { isConfirmed } = res;
     if( isConfirmed ){
+      this._floor.destroy( id ).subscribe( res => {
+        const { status, msg } = res;
+        if( status === 200 ){
+          this.getData();
+          this._helper.showMessage( 'Success', msg, 'success', 2000 );
+        } else if( status === 400 || status === 404 ) {
+          this._helper.showMessage( 'Error', msg, 'error', 2000 );
+        } else {
+          this._helper.showMessage( 'Error', 'Something wrong happened', 'error', 2000 );
+        }
+      });
 
-      this._helper.showToaster( 'success', 'Floor was deleted', false, 'top-end', 2000 );
     }
   }
 
