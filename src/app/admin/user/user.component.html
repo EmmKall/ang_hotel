@@ -26,6 +26,7 @@
     <app-list-user
       (editUserId)="fillEdit( $event )"
       (loadingE)="toggleLoading()"
+      [updatedList]="updatedList"
     />
 
   </mat-card-content>

@@ -1,6 +1,6 @@
 import { User } from './../../../interfaces/User';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
-import { Component, inject, output, ViewChild } from '@angular/core';
+import { Component, inject, output, ViewChild, Input, SimpleChanges } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatInputModule } from '@angular/material/input';
 import { MatSort, MatSortModule, Sort } from '@angular/material/sort';
@@ -30,6 +30,8 @@ export class ListUserComponent {
   editUserId = output<User>();
   loadingE   = output<void>();
 
+  @Input() updatedList: boolean = false;
+
   @ViewChild(MatSort) sort!: MatSort;
 
   data: User[]     = [];
@@ -43,6 +45,13 @@ export class ListUserComponent {
 
   ngAfterViewInit() {
     this.dataSource.sort = this.sort;
+  }
+
+  ngOnChanges( changes: SimpleChanges ): void {
+    if( this.updatedList ){
+      this.getData();
+      this.updatedList = false;
+    }
   }
 
   getData(): void {

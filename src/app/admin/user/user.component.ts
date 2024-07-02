@@ -30,7 +30,8 @@ export class UserComponent {
   private readonly _helper  = inject( HelpersService );
   private readonly _userS   = inject( UserService );
 
-  operation: string = 'add';
+  operation:   string = 'add';
+  updatedList: boolean = false;
 
   expandedFormUser:boolean = false;
 
@@ -57,6 +58,7 @@ export class UserComponent {
   closeForm( event: boolean ):void {
     this.expandedFormUser = event;
     this.operation = 'add';
+    this.updatedList = true;
   }
 
   cleanUser(): void {
@@ -93,6 +95,7 @@ export class UserComponent {
         //Clean form
         this.cleanUser();
         this.loading = false;
+        this.closeForm( false );
       } else if( status === 400 || status === 404 ){
         this._helper.showMessage( 'Error', msg, 'error', 2000 );
         this.loading = false;
