@@ -7,6 +7,7 @@ import { FormUserComponent } from './form-user/form-user.component';
 import { ListUserComponent } from './list-user/list-user.component';
 import { HelpersService } from '../../services/helpers.service';
 import { UserService } from '../../services/user.service';
+import { LoadingComponent } from '../../shared/loading/loading.component';
 
 @Component({
   selector: 'app-user',
@@ -15,6 +16,7 @@ import { UserService } from '../../services/user.service';
     CommonModule,
     FormUserComponent,
     ListUserComponent,
+    LoadingComponent,
     MatCardModule,
     MatExpansionModule,
   ],
@@ -26,7 +28,7 @@ export class UserComponent {
 
   readonly panelOpenState   = signal(false);
   private readonly _helper  = inject( HelpersService );
-  private readonly _user    = inject( UserService );
+  private readonly _userS   = inject( UserService );
 
   operation: string = 'add';
 
@@ -41,20 +43,15 @@ export class UserComponent {
     rol: 0
   };
 
+  loading: boolean = false;
+
   constructor() {
   }
 
   ngOnInit(): void {
-    this.getDate();
   }
 
   ngAfterViewInit() {
-  }
-
-  getDate(): void {
-    this._user.getAll().subscribe( res => { console.log( res );
-
-    });
   }
 
   closeForm( event: boolean ):void {
@@ -62,21 +59,68 @@ export class UserComponent {
     this.operation = 'add';
   }
 
+  cleanUser(): void {
+    this.user = {
+      id: 0,
+      name: '',
+      last_name: '',
+      email: '',
+      phone: '',
+      rol: 0
+    };
+  }
+
+  toggleLoading():void {
+    this.loading = !this.loading;
+  }
+
   handleSubmit( user: User ): void {
-    console.log( user );
-    if( user.id === 0 ){
-      //Add
+    this.user = user;
+    if( this.user.id === 0 ){
+      this.addUser();
     } else {
-      //Edit
+      this.editUser();
     }
   }
 
   addUser(): void {
-
+    this.loading = true;
+    this._userS.store( this.user ).subscribe( res => { console.log( res );
+      const { status, msg } = res;
+      if( status === 200 || 201 ){
+        this._helper.showMessage( 'Success', msg, 'success', 2000 );
+        this.closeForm( false );
+        //Clean form
+        this.cleanUser();
+        this.loading = false;
+      } else if( status === 400 || status === 404 ){
+        this._helper.showMessage( 'Error', msg, 'error', 2000 );
+        this.loading = false;
+      } else {
+        this._helper.showMessage( 'Error', 'Something wrong happend', 'error', 2000 );
+        this.loading = false;
+      }
+    });
   }
 
   editUser(): void {
-
+    this.loading = true;
+    this._userS.update( this.user ).subscribe( res => { console.log( res );
+      const { status, msg } = res;
+      if( status === 200 || 201 ){
+        this._helper.showMessage( 'Success', msg, 'success', 2000 );
+        this.closeForm( false );
+        //Clean form
+        this.cleanUser();
+        this.loading = false;
+      } else if( status === 400 || status === 404 ){
+        this._helper.showMessage( 'Error', msg, 'error', 2000 );
+        this.loading = false;
+      } else {
+        this._helper.showMessage( 'Error', 'Something wrong happend', 'error', 2000 );
+        this.loading = false;
+      }
+    });
   }
 
   fillEdit( user: User ): void {

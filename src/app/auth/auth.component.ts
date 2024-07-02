@@ -56,7 +56,7 @@ export class AuthComponent implements OnInit {
         localStorage.setItem( 'token', access_token );
         this._helper.showMessage( 'Success', 'Login successfully', 'success', 2500 );
         setTimeout(() => {
-          if( rol === 1 ){
+          if( rol === 0 ){
             this._router.navigate( [ 'admin' ] );
           } else {
             this._router.navigate( [ 'book' ] );

@@ -6,19 +6,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSort, MatSortModule, Sort } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { HelpersService } from '../../../services/helpers.service';
-
-const ELEMENT_DATA: User[] = [
-  { id: 1, name: 'Hydrogen', last_name: 'as', email: '@mail', phone: 'H', rol: 0 },
-  { id: 2, name: 'Helium', last_name: 'as', email: '@mail', phone: 'He', rol: 1 },
-  { id: 3, name: 'Lithium', last_name: 'as', email: '@mail', phone: 'Li', rol: 1 },
-  { id: 4, name: 'Beryllium', last_name: 'as', email: '@mail', phone: 'Be', rol: 1 },
-  { id: 5, name: 'Boron', last_name: 'as', email: '@mail', phone: 'B' , rol: 1 },
-  { id: 6, name: 'Carbon', last_name: 'as', email: '@mail', phone: 'C' , rol: 1 },
-  { id: 7, name: 'Nitrogen', last_name: 'as', email: '@mail', phone: 'N', rol: 1},
-  { id: 8, name: 'Oxygen', last_name: 'as', email: '@mail', phone: 'O' , rol: 1 },
-  { id: 9, name: 'Fluorine', last_name: 'as', email: '@mail', phone: 'F', rol: 1 },
-  { id: 10, name: 'Neon', last_name: 'as', email: '@mail', phone: 'Ne', rol: 1 },
-];
+import { UserService } from '../../../services/user.service';
 
 @Component({
   selector: 'app-list-user',
@@ -37,20 +25,40 @@ export class ListUserComponent {
 
   private _liveAnnouncer = inject( LiveAnnouncer );
   private _helper        = inject( HelpersService );
+  private _userS         = inject( UserService );
 
   editUserId = output<User>();
+  loadingE   = output<void>();
 
   @ViewChild(MatSort) sort!: MatSort;
 
+  data: User[]     = [];
+
   displayedColumns: string[] = ['name', 'email', 'phone', 'rol', 'actions'];
-  dataSource = new MatTableDataSource(ELEMENT_DATA);
+  dataSource = new MatTableDataSource( this.data );
 
   ngOnInit(): void {
-
+    this.getData();
   }
 
   ngAfterViewInit() {
     this.dataSource.sort = this.sort;
+  }
+
+  getData(): void {
+    this._userS.getAll().subscribe( res => {
+      const { status } = res;
+      if( status === 200 ){
+        const { data } = res;
+        this.data = data;
+        this.dataSource = new MatTableDataSource( this.data );
+      }else if( status === 400 || status === 401 ) {
+
+      } else {
+
+      }
+
+    });
   }
 
   applyFilter(event: Event) {
@@ -67,7 +75,7 @@ export class ListUserComponent {
   }
 
   editUser( id: number ):void {
-    const user = ELEMENT_DATA.filter( item => item.id === id )[ 0 ];
+    const user = this.data.filter( item => item.id === id )[ 0 ];
     this.editUserId.emit( user );
   }
 
@@ -75,8 +83,22 @@ export class ListUserComponent {
     const res = await this._helper.showConfirmation( 'Are you sure?', 'User will be delete', 'warning', 'Yes, delete' );
     const { isConfirmed } = res;
     if( isConfirmed ){
-
-      this._helper.showToaster( 'success', 'User was deleted', false, 'top-end', 2000 );
+      this.loadingE.emit();
+      this._userS.destroy( id ).subscribe( res => {
+        const { status, msg } = res;
+        if( status === 200 ){
+          this.getData();
+          this._helper.showToaster( 'success', msg, false, 'top-end', 2000 );
+          this.getData();
+          this.loadingE.emit();
+        } else if( status === 400 || status === 404 ){
+          this._helper.showToaster( 'error', msg, false, 'top-end', 2000 );
+          this.loadingE.emit();
+        } else {
+          this._helper.showToaster( 'error', 'Something wrong happened', false, 'top-end', 2000 );
+          this.loadingE.emit();
+        }
+      });
     }
   }
 
