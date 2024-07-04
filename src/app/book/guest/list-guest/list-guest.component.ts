@@ -1,24 +1,12 @@
 import { LiveAnnouncer } from '@angular/cdk/a11y';
-import { Component, inject, output, ViewChild } from '@angular/core';
+import { Component, inject, Input, output, SimpleChanges, ViewChild } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatInputModule } from '@angular/material/input';
 import { MatSort, MatSortModule, Sort } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { Guest } from '../../../interfaces/guest';
 import { HelpersService } from '../../../services/helpers.service';
-
-const ELEMENT_DATA: Guest[] = [
-  { id: 1, name: 'Hydrogen', last_name: 'as', email: '@mail', phone: 'H', born_day: '15-04-1992', sex: 'male' },
-  { id: 2, name: 'Helium', last_name: 'as', email: '@mail', phone: 'He', born_day: '15-04-1992', sex: 'famele' },
-  { id: 3, name: 'Lithium', last_name: 'as', email: '@mail', phone: 'Li', born_day: '15-04-1992', sex: 'male' },
-  { id: 4, name: 'Beryllium', last_name: 'as', email: '@mail', phone: 'Be', born_day: '15-04-1992', sex: 'famele' },
-  { id: 5, name: 'Boron', last_name: 'as', email: '@mail', phone: 'B', born_day: '15-04-1992', sex: 'male' },
-  { id: 6, name: 'Carbon', last_name: 'as', email: '@mail', phone: 'C', born_day: '15-04-1992', sex: 'famele' },
-  { id: 7, name: 'Nitrogen', last_name: 'as', email: '@mail', phone: 'N', born_day: '15-04-1992', sex: 'male'},
-  { id: 8, name: 'Oxygen', last_name: 'as', email: '@mail', phone: 'O' , born_day: '15-04-1992', sex: 'famele' },
-  { id: 9, name: 'Fluorine', last_name: 'as', email: '@mail', phone: 'F', born_day: '15-04-1992', sex: 'male' },
-  { id: 10, name: 'Neon', last_name: 'as', email: '@mail', phone: 'Ne', born_day: '15-04-1992', sex: 'male' },
-];
+import { GuestService } from '../../../services/guest.service';
 
 @Component({
   selector: 'app-list-guest',
@@ -37,24 +25,54 @@ export class ListGuestComponent {
 
   private _liveAnnouncer = inject( LiveAnnouncer );
   private _helper        = inject( HelpersService );
+  private _guest         = inject( GuestService );
 
   editUserId = output<Guest>();
 
+  @Input() updatedList: boolean = false;
+
   @ViewChild(MatSort) sort!: MatSort;
 
+  data: Guest[] = [];
+
+  loading: boolean  = false;
+
   displayedColumns: string[] = ['name', 'email', 'phone', 'born_day', 'sex', 'actions'];
-  dataSource = new MatTableDataSource(ELEMENT_DATA);
+  dataSource = new MatTableDataSource( this.data );
 
   constructor() {
 
   }
 
   ngOnInit(): void {
-
+    this.getData();
   }
 
   ngAfterViewInit() {
     this.dataSource.sort = this.sort;
+  }
+
+  ngOnChanges( changes: SimpleChanges ): void {
+    console.log( this.updatedList );
+    if( this.updatedList ){
+      this.getData();
+      this.updatedList = false;
+    }
+  }
+
+  getData(): void {
+    this._guest.getAll().subscribe( res => {
+      const { status, msg } = res;
+      if( status === 200 || status === 201 ){
+        const { data } = res;
+        this.data = data;
+        this.dataSource = new MatTableDataSource( this.data );
+      } else if( status === 400 || status === 404 ){
+        this._helper.showMessage( 'Error', msg, 'error', 2000 );
+      } else {
+        this._helper.showMessage( 'Error', 'Something wrong happenend', 'error', 2000 );
+      }
+    });
   }
 
   applyFilter(event: Event) {
@@ -71,7 +89,7 @@ export class ListGuestComponent {
   }
 
   editGuest( id: number ):void {
-    const guest = ELEMENT_DATA.filter( item => item.id === id )[ 0 ];
+    const guest = this.data.filter( item => item.id === id )[ 0 ];
     this.editUserId.emit( guest );
   }
 
@@ -79,8 +97,22 @@ export class ListGuestComponent {
     const res = await this._helper.showConfirmation( 'Are you sure?', 'User will be delete', 'warning', 'Yes, delete' );
     const { isConfirmed } = res;
     if( isConfirmed ){
-
-      this._helper.showToaster( 'success', 'User was deleted', false, 'top-end', 2000 );
+      this.loading = true;
+      this._guest.destroy( id ).subscribe( res => {
+        const { status, msg } = res;
+        if( status === 200 || status === 201 ){
+          this._helper.showMessage( 'Success', msg, 'success', 2000 );
+          this.getData();
+          this.loading = false;
+        } else if( status === 400 || status === 404 ){
+          this._helper.showMessage( 'Error', msg, 'error', 2000 );
+          this.loading = false;
+        } else {
+          this._helper.showMessage( 'Error', 'Somethin wrong happened', 'error', 2000 );
+          this.loading = false;
+        }
+      });
+      this._helper.showToaster( 'success', 'Floor was deleted', false, 'top-end', 2000 );
     }
   }
 

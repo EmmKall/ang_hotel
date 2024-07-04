@@ -91,7 +91,7 @@ export class FormGuestComponent {
       email:     this.formGroup.value.email ?? '',
       phone:     this.formGroup.value.phone ?? '',
       born_day:  this.formGroup.value.born_day ?? '',
-      sex:       this.formGroup.value.born_day ?? '',
+      sex:       this.formGroup.value.sex ?? '',
     };
     this.handleForm.emit( this.guest );
   }
