@@ -1,5 +1,8 @@
+@if ( loading) {
+  <app-loading />
+}
 <div class="w-full bg-gray-200 p-2 overflow-x-auto">
-  @for ( floor of floors; track $index ) {
+  @for ( floor of data; track $index ) {
     <h2 class="text-center underline text-2xl font-bold text-gray-800 my-2"><i class="fa-solid fa-suitcase-rolling"></i> {{ floor.piso }}</h2>
     <div class="grid grid-cols-1 md:grid-cols-5 gap-2 bg-gray-400 p-3 rounded-md">
       @for ( room of floor.cuarto; track $index) {
@@ -12,9 +15,9 @@
             <p class="text-center my-1"><i class="fa-solid fa-person-swimming bg-green-200 py-1 px-2 rounded-md"></i></p>
           </div>
           <div class="grid grid-cols-3 gap-3">
-            <button class="p-1 text-white rounded-lg bg-green-500 hover:bg-green-700"><i class="fa-regular fa-pen-to-square"></i></button> <!-- (click)="event( room.id )" -->
+            <button (click)="editFloor( room.id )" class="p-1 text-white rounded-lg bg-green-500 hover:bg-green-700"><i class="fa-regular fa-pen-to-square"></i></button> <!-- (click)="event( room.id )" -->
             <button class="p-1 text-white rounded-lg bg-yellow-500 hover:bg-yellow-700"><i class="fa-solid fa-hammer"></i></button>
-            <button class="p-1 text-white rounded-lg bg-red-500 hover:bg-red-700"><i class="fa-solid fa-eraser"></i></button>
+            <button (click)="destroy( room.id )" class="p-1 text-white rounded-lg bg-red-500 hover:bg-red-700"><i class="fa-solid fa-eraser"></i></button>
           </div>
         </div>
       }

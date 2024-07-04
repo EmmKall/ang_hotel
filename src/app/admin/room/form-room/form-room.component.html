@@ -4,8 +4,9 @@
       <label for="" class="w-full">Rol</label>
       <select name="" id="" class="w-full p-2 text-black rounded bg-gray-200" formControlName="floor">
         <option value="-1" selected disabled>--Choose option--</option>
-        <option value=0>Floor 01</option>
-        <option value=1>Floor 02</option>
+        @for (floor of data; track $index) {
+          <option value="{{ floor.id }}">{{ floor.piso }}</option>
+        }
       </select>
       <div class="text-center text-red-300 font-bold text-sm">
         @if( formGroup.controls.floor.touched && formGroup.controls.floor.hasError( 'required' ) ) {

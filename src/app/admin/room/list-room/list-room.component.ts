@@ -1,5 +1,5 @@
 import { LiveAnnouncer } from '@angular/cdk/a11y';
-import { Component, inject, output, ViewChild } from '@angular/core';
+import { Component, inject, Input, output, SimpleChanges, ViewChild } from '@angular/core';
 import { Room } from '../../../interfaces/room';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatCardModule } from '@angular/material/card';
@@ -8,137 +8,16 @@ import { MatInputModule } from '@angular/material/input';
 import { HelpersService } from '../../../services/helpers.service';
 import { Floor } from '../../../interfaces/floor';
 import { CommonModule } from '@angular/common';
-
-const ELEMENT_DATA: Floor[] = [
-  {
-    "id": 1,
-    "piso": "Piso 01",
-    "created_at": "2024-06-27T01:29:37.000000Z",
-    "updated_at": "2024-06-27T01:29:37.000000Z",
-    "cuarto": [
-        {
-            "id": 1,
-            "cuarto": "101",
-            "piso_id": 1,
-            "created_at": "2024-06-27T01:37:47.000000Z",
-            "updated_at": "2024-06-27T01:37:47.000000Z"
-        },
-        {
-            "id": 2,
-            "cuarto": "102",
-            "piso_id": 1,
-            "created_at": "2024-06-27T01:37:53.000000Z",
-            "updated_at": "2024-06-27T01:37:53.000000Z"
-        },
-        {
-            "id": 3,
-            "cuarto": "103",
-            "piso_id": 1,
-            "created_at": "2024-06-27T01:37:58.000000Z",
-            "updated_at": "2024-06-27T01:37:58.000000Z"
-        },
-        {
-            "id": 4,
-            "cuarto": "104",
-            "piso_id": 1,
-            "created_at": "2024-06-27T01:38:03.000000Z",
-            "updated_at": "2024-06-27T01:38:03.000000Z"
-        },
-        {
-            "id": 5,
-            "cuarto": "105",
-            "piso_id": 1,
-            "created_at": "2024-06-27T01:38:08.000000Z",
-            "updated_at": "2024-06-27T01:38:08.000000Z"
-        }
-    ]
-},
-{
-    "id": 2,
-    "piso": "Piso 02",
-    "created_at": "2024-06-27T01:29:46.000000Z",
-    "updated_at": "2024-06-27T01:29:46.000000Z",
-    "cuarto": [
-        {
-            "id": 6,
-            "cuarto": "201",
-            "piso_id": 2,
-            "created_at": "2024-06-27T01:38:27.000000Z",
-            "updated_at": "2024-06-27T01:38:27.000000Z"
-        },
-        {
-            "id": 7,
-            "cuarto": "202",
-            "piso_id": 2,
-            "created_at": "2024-06-27T01:38:30.000000Z",
-            "updated_at": "2024-06-27T01:38:30.000000Z"
-        },
-        {
-            "id": 8,
-            "cuarto": "203",
-            "piso_id": 2,
-            "created_at": "2024-06-27T01:38:35.000000Z",
-            "updated_at": "2024-06-27T01:38:35.000000Z"
-        },
-        {
-            "id": 9,
-            "cuarto": "204",
-            "piso_id": 2,
-            "created_at": "2024-06-27T01:38:39.000000Z",
-            "updated_at": "2024-06-27T01:38:39.000000Z"
-        }
-    ]
-},
-{
-    "id": 3,
-    "piso": "Piso 03",
-    "created_at": "2024-06-27T01:29:51.000000Z",
-    "updated_at": "2024-06-27T01:29:51.000000Z",
-    "cuarto": [
-        {
-            "id": 10,
-            "cuarto": "301",
-            "piso_id": 3,
-            "created_at": "2024-06-27T01:38:45.000000Z",
-            "updated_at": "2024-06-27T01:38:45.000000Z"
-        },
-        {
-            "id": 11,
-            "cuarto": "302",
-            "piso_id": 3,
-            "created_at": "2024-06-27T01:38:48.000000Z",
-            "updated_at": "2024-06-27T01:38:48.000000Z"
-        },
-        {
-            "id": 12,
-            "cuarto": "303",
-            "piso_id": 3,
-            "created_at": "2024-06-27T01:38:53.000000Z",
-            "updated_at": "2024-06-27T01:38:53.000000Z"
-        },
-        {
-            "id": 13,
-            "cuarto": "304",
-            "piso_id": 3,
-            "created_at": "2024-06-27T01:38:56.000000Z",
-            "updated_at": "2024-06-27T01:38:56.000000Z"
-        },
-        {
-            "id": 14,
-            "cuarto": "305",
-            "piso_id": 3,
-            "created_at": "2024-06-27T01:39:03.000000Z",
-            "updated_at": "2024-06-27T01:39:03.000000Z"
-        }
-    ]
-},
-];
+import { FloorService } from '../../../services/Floor.service';
+import { RoomService } from '../../../services/room.service';
+import { LoadingComponent } from '../../../shared/loading/loading.component';
 
 @Component({
   selector: 'app-list-room',
   standalone: true,
   imports: [
     CommonModule,
+    LoadingComponent,
     MatTableModule,
     MatCardModule,
     MatSort,
@@ -152,28 +31,56 @@ export class ListRoomComponent {
 
   private _liveAnnouncer = inject( LiveAnnouncer );
   private _helper        = inject( HelpersService );
+  private _floor         = inject( FloorService );
+  private _room          = inject( RoomService );
 
   editFloorId = output<Room>();
 
+  @Input() updatedList: boolean = false;
+
   @ViewChild(MatSort) sort!: MatSort;
 
-  displayedColumns: string[] = ['floor', 'room', 'actions'];
-  dataSource = new MatTableDataSource(ELEMENT_DATA);
+  data: Array<Floor> = [];
 
-  rooms: Room[] = [];
-  floors: Floor[]  = [];
+  loading: boolean  = false;
+
+  displayedColumns: string[] = ['floor', 'room', 'actions'];
+  dataSource = new MatTableDataSource( this.data );
+
+  rooms:   Room[] = [];
+  floors: Floor[] = [];
 
   constructor() {
-
   }
 
   ngOnInit(): void {
-    this.floors = ELEMENT_DATA;
     this.FilterRooms();
+    this.getData();
   }
 
   ngAfterViewInit() {
     this.dataSource.sort = this.sort;
+  }
+
+  ngOnChanges( changes: SimpleChanges ): void {
+    if( this.updatedList ){
+      this.getData();
+      this.updatedList = false;
+    }
+  }
+
+  getData(): void {
+    this._floor.getAll().subscribe( res => {
+      const { status, msg } = res;
+      if( status === 200 || status === 201 ){
+        const { data } = res;
+        this.data = data;
+      } else if( status === 400 || status === 404 ){
+        this._helper.showMessage( 'Error', msg, 'error', 2000 );
+      } else {
+        this._helper.showMessage( 'Error', 'Something wrong happenend', 'error', 2000 );
+      }
+    });
   }
 
   applyFilter(event: Event) {
@@ -190,23 +97,43 @@ export class ListRoomComponent {
   }
 
   FilterRooms() {
-
-    this.rooms.forEach( element => {
-      const idFloor = element.id;
+    this.floors.forEach( item => {
 
     });
   }
 
   editFloor( id: number ):void {
-    const room = ELEMENT_DATA.filter( item => item.id === id )[ 0 ];
-    //this.editFloorId.emit( room );
+    let room: Room = {
+      id: 0,
+      cuarto: '',
+      piso_id: 0,
+    };
+    this.data.forEach( item => {
+      const data = item.cuarto ?? [];
+      room = data.filter( row => row.id === id )[ 0 ] ?? room;
+    });
+    this.editFloorId.emit( room );
   }
 
   async destroy( id: number ): Promise<void> {
     const res = await this._helper.showConfirmation( 'Are you sure?', 'User will be delete', 'warning', 'Yes, delete' );
     const { isConfirmed } = res;
     if( isConfirmed ){
-
+      this.loading = true;
+      this._room.destroy( id ).subscribe( res => {
+        const { status, msg } = res;
+        if( status === 200 || status === 201 ){
+          this._helper.showMessage( 'Success', msg, 'success', 2000 );
+          this.getData();
+          this.loading = false;
+        } else if( status === 400 || status === 404 ){
+          this._helper.showMessage( 'Error', msg, 'error', 2000 );
+          this.loading = false;
+        } else {
+          this._helper.showMessage( 'Error', 'Somethin wrong happened', 'error', 2000 );
+          this.loading = false;
+        }
+      });
       this._helper.showToaster( 'success', 'Floor was deleted', false, 'top-end', 2000 );
     }
   }
