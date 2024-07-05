@@ -53,7 +53,6 @@ export class ListGuestComponent {
   }
 
   ngOnChanges( changes: SimpleChanges ): void {
-    console.log( this.updatedList );
     if( this.updatedList ){
       this.getData();
       this.updatedList = false;
